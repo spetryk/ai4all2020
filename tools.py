@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torchvision
 from torchvision import datasets, transforms
-
+import numpy as np
 
 
 """
@@ -23,6 +23,13 @@ def get_dataloader(dataroot, image_size, batch_size):
                                              shuffle=True, num_workers=2)
 
     return dataloader
+
+def visualize(image_tensor):
+    mean = [0.5, 0.5, 0.5]
+    std  = [0.5, 0.5, 0.5]
+    unmean = -np.array(mean) / np.array(std)
+    unstd  = 1. / np.array(std)
+    return transforms.Normalize(unmean, unstd)(image_tensor).numpy().transpose((1,2,0))
 
 
 def format_data(data, device, noise_size):
