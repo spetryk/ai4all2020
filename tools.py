@@ -131,6 +131,14 @@ def update(optimizer, loss):
     optimizer.step()
 
 
+def save_model(model, optimizer, epoch, filename):
+    torch.save({
+        'epoch': epoch,
+        'net_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict()
+    }, filename)
+
+
 
 
 
