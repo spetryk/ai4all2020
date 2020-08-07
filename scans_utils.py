@@ -9,7 +9,7 @@ TRAIN_FRAC = 0.8
 
 
 REAL_DOWNLOAD_URL = "https://ai4all-2020.s3.amazonaws.com/data/real_scans.pt"
-FAKE_DOWNLOAD_URL = "https://ai4all-2020.s3.amazonaws.com/data/fake_scans.pt"
+FAKE_DOWNLOAD_URL = "https://ai4all-2020.s3.amazonaws.com/data/fake_scans_5500.pt"
 
 class MRIDataset(Dataset):
     def __init__(self, dataset_dir, transform=None,
