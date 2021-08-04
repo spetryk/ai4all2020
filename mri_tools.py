@@ -188,7 +188,7 @@ def gradient_penalty(discriminator, real_images, generated_images):
     batch_size = real_images.size()[0]
 
     # Calculate interpolation
-    alpha = torch.rand(batch_size, 1, 1, 1)
+    alpha = torch.rand(batch_size, 1, 1, 1, requires_grad=True)
     alpha = alpha.expand_as(real_images).cuda()
     interpolated = alpha * real_images + (1 - alpha) * generated_images
     #interpolated.requires_grad = True
@@ -213,4 +213,12 @@ def gradient_penalty(discriminator, real_images, generated_images):
 
     # Return gradient penalty
     return 10 * ((gradients_norm - 1) ** 2).mean()
+
+def save_model(model, optimizer, epoch, filename):
+    torch.save({
+        'epoch': epoch,
+        'net_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict()
+    }, filename)
+
 
