@@ -42,7 +42,7 @@ def get_brainomics_dataloader(base_dir, batch_size=64):
 
     #base_dir = "/work/drothchild/datasets/brainomics/localizer"
     data = BrainomicsDataset(base_dir)
-    loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
+    loader = DataLoader(data, batch_size=batch_size, shuffle=True)
     return loader
 
 def get_mnist_dataloaders(batch_size=128):
