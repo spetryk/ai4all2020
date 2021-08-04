@@ -29,7 +29,7 @@ class BrainomicsDataset(Dataset):
     def __len__(self):
         return self.data.size(0)
         
-def get_brainomics_dataloaders(base_dir, batch_size=64):
+def get_brainomics_dataloader(base_dir, batch_size=64):
     """
     all_transforms = transforms.Compose([
         transforms.Normalize(0, 32768),
@@ -41,11 +41,9 @@ def get_brainomics_dataloaders(base_dir, batch_size=64):
     """
 
     #base_dir = "/work/drothchild/datasets/brainomics/localizer"
-    train_data = BrainomicsDataset(base_dir, train=True)
-    test_data = BrainomicsDataset(base_dir, train=False)
-    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_data, batch_size=batch_size)
-    return train_loader, test_loader
+    data = BrainomicsDataset(base_dir)
+    loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
+    return loader
 
 def get_mnist_dataloaders(batch_size=128):
     """MNIST dataloader with (32, 32) sized images."""
