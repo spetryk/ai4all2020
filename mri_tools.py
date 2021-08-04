@@ -191,7 +191,7 @@ def gradient_penalty(discriminator, real_images, generated_images):
     alpha = torch.rand(batch_size, 1, 1, 1)
     alpha = alpha.expand_as(real_images).cuda()
     interpolated = alpha * real_images + (1 - alpha) * generated_images
-    interpolated.requires_grad = True
+    #interpolated.requires_grad = True
     interpolated = interpolated.cuda()
 
     # Calculate probability of interpolated examples
