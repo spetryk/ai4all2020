@@ -18,56 +18,19 @@ atexit.register(profile.print_stats)
 """
 
 class BrainomicsDataset(Dataset):
-    def __init__(self, dataset_dir, train, transform=None):
+    def __init__(self, dataset_dir):
         self.dataset_dir = dataset_dir
-        self.train = train
-        self.transform = transform
 
-        # using slices 45 to 145 (they look the nicest)
-        self.n_slices = 100
-
-        # there are 94 subjects: sub-S01 - sub-S94
-        self.n_train_subjects = 90
-        self.n_val_subjects = 4
-
-        n_subjects = self.n_train_subjects + self.n_val_subjects
-
-        #self.data = torch.zeros(n_subjects * self.n_slices, 1, 240, 128)
-        data = []
-        for subject in range(1, n_subjects + 1):
-            #subject = (idx // self.n_slices) + 1
-            #data_slice = (idx % self.n_slices)# + 45
-
-            subject_dir = "sub-S{:0>2d}/anat".format(subject)
-            #fn = "sub-S{:0>2d}_T1w.nii.gz".format(subject)
-            fn = "slices_all.npy"
-            data_path = os.path.join(self.dataset_dir, subject_dir, fn)
-
-            #mri_data = nilearn.image.load_img(data_path).get_data()
-            mri_data = torch.load(data_path).unsqueeze(1)
-            for i, image in enumerate(mri_data):
-                transformed = self.transform(image)
-                #print("transformed min/mean/max", transformed.min(), transformed.mean(), transformed.max())
-                #self.data[(subject - 1) * self.n_slices + i,:,:,:] = transformed
-                data.append(transformed)
-        self.data = torch.stack(data)
-
+        self.data = torch.load(os.path.join(dataset_dir, "mris.pt"))
 
     def __getitem__(self, idx):
-        if not self.train:
-            # 90 subjects in train, the rest in val
-            idx += self.n_train_subjects * self.n_slices
         return self.data[idx]
 
     def __len__(self):
-        # subjects 1 - 90 are train, 91 - 94 are val
-        # (no need for val for gans anyway)
-        if self.train:
-            return self.n_train_subjects * self.n_slices
-        else:
-            return self.n_val_subjects * self.n_slices
-
+        return self.data.size(0)
+        
 def get_brainomics_dataloaders(base_dir, batch_size=64):
+    """
     all_transforms = transforms.Compose([
         transforms.Normalize(0, 32768),
         transforms.ToPILImage(),
@@ -75,12 +38,11 @@ def get_brainomics_dataloaders(base_dir, batch_size=64):
         transforms.ToTensor(),
         #transforms.Normalize(2635, 3561),
     ])
+    """
 
     #base_dir = "/work/drothchild/datasets/brainomics/localizer"
-    train_data = BrainomicsDataset(base_dir, train=True,
-                                   transform=all_transforms)
-    test_data = BrainomicsDataset(base_dir, train=False,
-                                  transform=all_transforms)
+    train_data = BrainomicsDataset(base_dir, train=True)
+    test_data = BrainomicsDataset(base_dir, train=False)
     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_data, batch_size=batch_size)
     return train_loader, test_loader
